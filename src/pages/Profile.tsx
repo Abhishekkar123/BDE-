@@ -16,14 +16,14 @@ const Profile = () => {
   };
 
   const columns = [
-    'Opportunity Title',
-    'Client Name',
-    'Associated Lead',
-    'Status',
-    'Esti. Quotation Amount',
-    'Created By',
-    'Created Date',
-    'Modified Date'
+    { header: 'Opportunity Title', accessor: 'opportunitytitle' },
+    { header: 'Client Name', accessor: 'clientname' },
+    { header: 'Associated Lead', accessor: 'associatedlead' },
+    { header: 'Status', accessor: 'status' },
+    { header: 'Esti. Quotation Amount', accessor: 'estiquotationamount' },
+    { header: 'Created By', accessor: 'createdby' },
+    { header: 'Created Date', accessor: 'createddate' },
+    { header: 'Modified Date', accessor: 'modifieddate' }
   ];
 
   const [leadData,setLeadData] =useState([
@@ -120,7 +120,7 @@ const Profile = () => {
                     <Button variant="outline-secondary" onClick={handleSearch}>Search</Button>
                 </div>
                 <TableComponent data={filteredData}
-                columns={columns} onDelete={handleDelete}/>
+                columns={columns} onDelete={handleDelete} type="profile"/>
             </div>
 
      

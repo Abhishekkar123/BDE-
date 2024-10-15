@@ -2,18 +2,15 @@ import { useState, useEffect } from 'react';
 import { Table, Container, Row, Col, Form, Button } from 'react-bootstrap';
 import axios from 'axios';
 import { useNavigate} from 'react-router-dom';
-import {useLocation } from 'react-router-dom';
-const QuotationForm = () => {
+import { useParams } from 'react-router-dom';
+const EditQuot = () => {
     // Initialize state for the form fields
-    const location=useLocation();
-    console.log(location.state?.leadId)
-    const id=location.state?.leadId
+    const {id}=useParams();
     const navigate=useNavigate();
     const [formData, setFormData] = useState({
         quotationNo: '',
         clientName: '',
         revisionNumber: '',
-        leadId:'',
         standards: '',
         certificationType: '',
         surveillanceType: '',
@@ -33,7 +30,6 @@ const QuotationForm = () => {
         isDiscountGiven: 'No',
         approvedQuotationAmount: 0,
     });
-    formData.leadId=id
 
     const [zone, setZone] = useState([]);
     const [surv, setSurv] = useState([]);
@@ -61,6 +57,9 @@ const QuotationForm = () => {
 
                 const resp5=await axios.get('http://localhost:8000/api/quotation/currency')
                 setCurr(resp5.data.data)
+
+
+
             } catch (error) {
                 console.error('Error fetching data:', error);
             }
@@ -68,6 +67,21 @@ const QuotationForm = () => {
 
         fetchData();
     }, []); 
+    useEffect(() => {
+        const getData = async () => {
+            try {
+                const response = await axios.get(`http://localhost:8000/api/quotation/single/${id}`);
+                setFormData(response.data);
+                
+            } catch (error) {
+                console.error('Error fetching data:', error);
+               
+            }
+        };
+        getData();
+    }, [id]);
+
+
 
     // Handle input change
     const handleChange = (e) => {
@@ -85,7 +99,6 @@ const QuotationForm = () => {
         try {
             const dataToSubmit = {
                 ...formData,
-                leadId:Number(formData.leadId),
                 revisionNumber:Number(formData.revisionNumber),
                 applicationFees: parseFloat(formData.applicationFees),
                 accreditationFees: parseFloat(formData.accreditationFees),
@@ -99,7 +112,7 @@ const QuotationForm = () => {
                 totalFees: parseFloat(formData.totalFees),
                 approvedQuotationAmount: parseFloat(formData.approvedQuotationAmount),
             };
-            await axios.post('http://localhost:8000/api/quotation/create', dataToSubmit);
+            await axios.put(`http://localhost:8000/api/quotation/quotations/${id}`, dataToSubmit);
             navigate("/business/quotation")
         } catch (error) {
             console.error('Error submitting quotation:', error);
@@ -145,18 +158,6 @@ const QuotationForm = () => {
                                 name="revisionNumber"
                                 placeholder="0"
                                 value={formData.revisionNumber}
-                                onChange={handleChange}
-                            />
-                        </Form.Group>
-                    </Col>
-                    <Col md={4}>
-                        <Form.Group controlId="leadId">
-                            <Form.Label>Lead</Form.Label>
-                            <Form.Control
-                                type="text"
-                                name="leadId"
-                                placeholder=""
-                                value={formData.leadId}
                                 onChange={handleChange}
                             />
                         </Form.Group>
@@ -452,4 +453,5 @@ const QuotationForm = () => {
     );
 };
 
-export default QuotationForm;
+export default EditQuot;
+

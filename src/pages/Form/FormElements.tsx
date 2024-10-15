@@ -1,10 +1,11 @@
-import { useState } from 'react';
+import { useState,useEffect } from 'react';
 import { Form, Row, Col, Button } from 'react-bootstrap';
 import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+
 const FormElements = () => {
-  const navigate=useNavigate();
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -13,49 +14,109 @@ const FormElements = () => {
     contactNumber: '',
     address: '',
     department: '',
-    role: '',
+    roleName: '',
     isActive: '',
-    reportedFor: ''
+    reportedTo: ''
   });
+  const [roles, setRoles] = useState([]);
+  const [department,setDept]=useState([])
+  const [error,setError]=useState('');
+  const [users, setUsers] = useState([]); 
+
+  useEffect(() => {
+    // Fetch users from the API
+    const fetchUsers = async () => {
+      try {
+        const response = await axios.get('http://localhost:8000/users');
+        setUsers(response.data);  // Store the user data
+        console.log(response.data)
+      } catch (err) {
+        console.error('Error fetching users:', err);
+      }
+    };
+    fetchUsers();
+  }, []);
+
+  useEffect(()=>{
+    const fetchList=async()=>{
+    try{
+      const response = await axios.get('http://localhost:8000/users');
+      console.log("res",response.data)
+
+    }catch(err){
+
+    }
+  };fetchList();
+  },[])
+
+  useEffect(() => {
+    // Fetch roles from the API
+    const fetchRoles = async () => {
+      try {
+        const response = await axios.get('http://localhost:8000/roles'); // Adjust the URL to your roles API
+      //  console.log(response.data)
+        setRoles(response.data);
+      } catch (error) {
+        console.error('Error fetching roles:', error);
+      }
+    }; fetchRoles();
+  }, []);
+
+  useEffect(() => {
+    // Fetch roles from the API
+    const fetchDept = async () => {
+      try {
+        const resp = await axios.get('http://localhost:8000/departments'); 
+      //  console.log("dept",resp.data)
+        setDept(resp.data);
+      } catch (error) {
+        console.error('Error fetching dept:', error);
+      }
+    }; fetchDept();
+  }, []);
+
 
   // Handle input changes
   const handleChange = (e) => {
     const { name, value } = e.target;
+    console.log(name,value)
     setFormData({
       ...formData,
       [name]: value
     });
   };
 
+  // Validation function to check if all required fields are filled
+  const validateForm = () => {
+    return (
+      formData.firstName &&
+      formData.lastName &&
+      formData.email &&
+      formData.password &&
+      formData.contactNumber &&
+      formData.address &&
+      formData.department &&
+      formData.roleName &&
+      formData.isActive &&
+      formData.reportedTo
+    );
+  };
+
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-
-    try{
-      const resp = await axios.post('http://localhost:8000/create', formData);
-      console.log(resp)
-      navigate('/tables');
-      
-      // setFormData({
-      //   firstName: '',
-      //   lastName: '',
-      //   email: '',
-      //   password: '',
-      //   contactNumber: '',
-      //   address: '',
-      //   department: '',
-      //   role: '',
-      //   isActive: '',
-      //   reportedFor: ''
-      // });
-
-    }catch(err){
-      console.error('Error:', err);
-
+    if (validateForm()) {
+      try {
+        const resp = await axios.post('http://localhost:8000/api/auth/register', formData);
+        console.log(resp);
+        navigate('/tables');
+      } catch (err) {
+        console.error('Error:', err);
+      }
+    } else {
+      setError("Please fill in all the required fields.");
     }
-
-    
   };
 
   return (
@@ -63,14 +124,18 @@ const FormElements = () => {
       <Breadcrumb pageName="User Form" />
 
       <div className="rounded-sm border border-stroke bg-white px-5 pt-6 pb-2.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
-        <h4 className="mb-6 text-xl font-semibold text-black">
-          User Details
-        </h4>
+         <h4 className="mb-6 text-xl font-semibold text-black">User Details</h4>
+         {error && (
+            <div className="mb-4 text-red-500 text-center">
+              {error}
+            </div>
+          )}
 
         <Form onSubmit={handleSubmit}>
+          
           <Row className="mb-3">
             <Form.Group as={Col} controlId="formFirstName">
-              <Form.Label className='text-black dark:text-white fw-normal'>First Name</Form.Label>
+              <Form.Label className='text-black dark:text-white fw-medium'>First Name</Form.Label>
               <Form.Control
                 type="text"
                 name="firstName"
@@ -81,7 +146,7 @@ const FormElements = () => {
             </Form.Group>
 
             <Form.Group as={Col} controlId="formLastName">
-              <Form.Label className='text-black dark:text-white fw-normal'>Last Name</Form.Label>
+              <Form.Label className='text-black dark:text-white fw-medium'>Last Name</Form.Label>
               <Form.Control
                 type="text"
                 name="lastName"
@@ -93,7 +158,7 @@ const FormElements = () => {
           </Row>
 
           <Form.Group className="mb-3" controlId="formEmail">
-            <Form.Label className='text-black dark:text-white fw-normal'>Email</Form.Label>
+            <Form.Label className='text-black dark:text-white fw-medium'>Email</Form.Label>
             <Form.Control
               type="email"
               name="email"
@@ -104,7 +169,7 @@ const FormElements = () => {
           </Form.Group>
 
           <Form.Group className="mb-3" controlId="formPassword">
-            <Form.Label className='text-black dark:text-white fw-normal'>Password</Form.Label>
+            <Form.Label className='text-black dark:text-white fw-medium'>Password</Form.Label>
             <Form.Control
               type="password"
               name="password"
@@ -115,7 +180,7 @@ const FormElements = () => {
           </Form.Group>
 
           <Form.Group className="mb-3" controlId="formContactNumber">
-            <Form.Label className='text-black dark:text-white fw-normal'>Contact Number</Form.Label>
+            <Form.Label className='text-black dark:text-white fw-medium'>Contact Number</Form.Label>
             <Form.Control
               type="tel"
               name="contactNumber"
@@ -126,7 +191,7 @@ const FormElements = () => {
           </Form.Group>
 
           <Form.Group className="mb-3" controlId="formAddress">
-            <Form.Label className='text-black dark:text-white fw-normal'>Address</Form.Label>
+            <Form.Label className='text-black dark:text-white fw-medium'>Address</Form.Label>
             <Form.Control
               type="text"
               name="address"
@@ -137,36 +202,43 @@ const FormElements = () => {
           </Form.Group>
 
           <Form.Group className="mb-3" controlId="formDepartment">
-            <Form.Label className='text-black dark:text-white fw-normal'>Department</Form.Label>
+            <Form.Label className='text-black dark:text-white fw-medium'>Department</Form.Label>
             <Form.Select
               name="department"
               value={formData.department}
               onChange={handleChange}
             >
               <option value="">Select Department</option>
-              <option value="admin">admin</option>
-              <option value="user">user</option>
-              <option value="guest">guest</option>
+              {
+                department.map((dep)=>(
+                  <option key={dep.id} value={dep.name}>
+                    {dep.name}
+                  </option>
+                ))
+              }
             </Form.Select>
           </Form.Group>
 
           <Form.Group className="mb-3" controlId="formRole">
-            <Form.Label className='text-black dark:text-white fw-normal'>Role</Form.Label>
+            <Form.Label className="text-black dark:text-white fw-medium">Role</Form.Label>
             <Form.Select
-              name="role"
-              value={formData.role}
+              name="roleName"
+              value={formData.roleName}
               onChange={handleChange}
             >
               <option value="">Select Role</option>
-              <option value="admin">admin</option>
-              <option value="user">user</option>
-              <option value="guest">guest</option>
+              {roles.map((role) => (
+                <option key={role.id} value={role.name}>
+                  {role.name}
+                </option>
+              ))}
             </Form.Select>
           </Form.Group>
 
+
           <Row className="mb-3">
             <Form.Group as={Col} controlId="formIsActive">
-              <Form.Label className='text-black dark:text-white fw-normal'>Is Active</Form.Label>
+              <Form.Label className='text-black dark:text-white fw-medium'>Is Active</Form.Label>
               <Form.Select
                 name="isActive"
                 value={formData.isActive}
@@ -179,16 +251,18 @@ const FormElements = () => {
             </Form.Group>
 
             <Form.Group as={Col} controlId="formReportedFor">
-              <Form.Label className='text-black dark:text-white fw-normal'>Reported For</Form.Label>
+              <Form.Label className='text-black dark:text-white fw-medium'>Reported To</Form.Label>
               <Form.Select
-                name="reportedFor"
-                value={formData.reportedFor}
+                name="reportedTo"
+                value={formData.reportedTo}
                 onChange={handleChange}
               >
-                <option value="">Select Reason</option>
-                <option value="yes">Yes</option>
-                <option value="no">No</option>
-                
+                <option value="">Select User</option>
+                {users.map((user) => (
+                  <option key={user.id} value={user.id}>
+                    {user.firstName} {user.lastName}
+                  </option>
+                ))}
               </Form.Select>
             </Form.Group>
           </Row>

@@ -10,7 +10,7 @@ const DropdownUser = () => {
 
   useEffect(() => {
     // Retrieve the username from localStorage
-    const storedUsername = localStorage.getItem('admin');
+    const storedUsername = localStorage.getItem('user');
     if (storedUsername) {
       setUsername(storedUsername);
     }
@@ -18,8 +18,11 @@ const DropdownUser = () => {
   const handleLogout = () => {
     // Clear user session (e.g., remove token, etc.)
     navigate('/');
-    localStorage.removeItem('admin');
+    localStorage.removeItem('user');
     localStorage.removeItem('token')
+    localStorage.removeItem('permission');
+    localStorage.removeItem('id');
+    localStorage.removeItem('role');
 
     // Redirect to login page
     

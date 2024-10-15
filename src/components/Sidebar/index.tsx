@@ -11,9 +11,21 @@ interface SidebarProps {
 const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
   const location = useLocation();
   const { pathname } = location;
+  const [permissions, setPermissions] = useState([]);
 
   const trigger = useRef<any>(null);
   const sidebar = useRef<any>(null);
+  useEffect(() => {
+    const storedPermissions = localStorage.getItem('permission');
+    if (storedPermissions) {
+      setPermissions(JSON.parse(storedPermissions));
+    }
+  }, []);
+  // console.log("permsission",permissions[0]?.lead)
+
+  const canMenu=permissions[0]?.lead?.menu
+
+
 
   const storedSidebarExpanded = localStorage.getItem('sidebar-expanded');
   const [sidebarExpanded, setSidebarExpanded] = useState(
@@ -96,7 +108,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
 
       <div className="no-scrollbar flex flex-col overflow-y-auto duration-300 ease-linear">
         {/* <!-- Sidebar Menu --> */}
-        <nav className="mt-5 py-4 px-4 lg:mt-9 lg:px-6">
+        <nav className="mt-2 py-4 px-4 lg:mt-9 lg:px-6">
           {/* <!-- Menu Group --> */}
           <div>
             <h3 className="mb-4 ml-4 text-sm font-semibold text-bodydark2">
@@ -199,7 +211,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
               {/* <!-- Menu Item Dashboard --> */}
 
               {/* <!-- Menu Item Calendar --> */}
-              <li>
+              {/* <li>
                 <NavLink
                   to="/calendar"
                   className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${
@@ -220,9 +232,9 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                       fill=""
                     />
                   </svg>
-                  Calendar
+                  Calendar  
                 </NavLink>
-              </li>
+              </li> */}
               {/* <!-- Menu Item Calendar --> */}
 
               {/* <!-- Menu Item Profile --> */}
@@ -237,7 +249,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                   Opportunity
                 </NavLink>
               </li>
-              <li>
+             {canMenu && <li>
                 <NavLink
                   to="/business/lead"
                   className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${
@@ -263,7 +275,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                   </svg> */}
                  Leads
                 </NavLink>
-              </li>
+              </li>}
 
               {/* <!-- Menu Item Profile --> */}
 
@@ -420,7 +432,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                   }`}
                 >
                   
-                  Contract
+                  Contract Review/Application Review
                 </NavLink>
               </li>
               <li>
@@ -474,7 +486,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                       </clipPath>
                     </defs>
                   </svg>
-                  Settings
+                  Questionnaire
                 </NavLink>
               </li>
               {/* <!-- Menu Item Settings --> */}

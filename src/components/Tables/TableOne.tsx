@@ -12,14 +12,26 @@ const TableOne = () => {
   const [users, setUsers] = useState([]);
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [usersPerPage] = useState(5);
+  const [usersPerPage] = useState(10);
+  const [permissions, setPermissions] = useState([]);
   const navigate=useNavigate();
+
+
+   useEffect(() => {
+    console.log("user Table")
+    const storedPermissions = localStorage.getItem('permission');
+    if (storedPermissions) {
+      setPermissions(JSON.parse(storedPermissions));
+    }
+  }, []);
+  console.log("permsission",permissions[0])
 
   useEffect(() => {
     // Fetch user data from API
     const fetchUsers = async () => {
       try {
         const response = await axios.get('http://localhost:8000/users'); // Replace with your API endpoint
+        console.log(response.data)
         if (Array.isArray(response.data)) {
           setUsers(response.data);
           setFilteredUsers(response.data);
@@ -75,6 +87,11 @@ const TableOne = () => {
 
   }
 
+  // const canView = permissions[0]?.user?.view;
+  const canCreate = permissions[0]?.user?.create;
+  const canEdit = permissions[0]?.user?.update;
+  const canDelete = permissions[0]?.user?.delete;
+
   return (
     <div className="container my-4">
       <div className="d-flex mb-3">
@@ -92,37 +109,38 @@ const TableOne = () => {
             <th className="p-4">Name</th>
             <th className="p-4">Email</th>
             <th className="p-4">Contact No</th>
-            <th className="p-4">Roles</th>
             <th className="p-4">Department</th>
-            <th className="p-4">Edit</th>
-            <th className="p-4">Delete</th>
+            <th className="p-4">Roles</th>
+            {canEdit && <th className="p-4">Edit</th>}
+            {canDelete && <th className="p-4">Delete</th>}
           </tr>
         </thead>
         <tbody>
           {currentUsers.map((user, key) => (
-            <tr key={key}>
+            <tr key={key} >
               <td className="p-4">{user.firstName || ''}</td>
               <td className="p-4">{user.email || ''}</td>
               <td className="p-4">{user.contactNumber || ''}</td>
               <td className="p-4">{user.department || ''}</td>
-              <td className="p-4">{user.role || ''}</td>
-              <td className="p-4">
-                <Button variant="outline-dark" 
-                size="sm"
-                onClick={()=>updateUser(user.id)}
-                >
-                  <MdOutlineEdit />
-                </Button>
-              </td>
-              <td className="p-4">
-                <Button
-                  variant="outline-danger"
-                  size="sm"
-                  onClick={() => deleteUser(user.id)}
-                >
-                  <MdDelete />
-                </Button>
-              </td>
+              <td className="p-4">{user.roleName || ''}</td>
+              {canEdit && (
+                    <td className="p-4">
+                      <Button variant="outline-dark" size="sm" onClick={() => updateUser(user.id)}>
+                        <MdOutlineEdit />
+                      </Button>
+                    </td>
+                  )}
+                  {canDelete && (
+                    <td className="p-4">
+                      <Button
+                        variant="outline-danger"
+                        size="sm"
+                        onClick={() => deleteUser(user.id)}
+                      >
+                        <MdDelete />
+                      </Button>
+                    </td>
+                  )}
             </tr>
           ))}
         </tbody>

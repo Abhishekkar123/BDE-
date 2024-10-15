@@ -6,6 +6,7 @@ import { Form, Row, Col, Button } from 'react-bootstrap';
 const EditUserTable = () => {
   const { id } = useParams();
   const navigate=useNavigate()
+  const [users, setUsers] = useState([]); 
   const [user, setUser] = useState({
     firstName: '',
     lastName: '',
@@ -13,10 +14,38 @@ const EditUserTable = () => {
     email: '',
     contactNumber: '',
     department: '',
-    role:'',
+    roleName:'',
     isActive:'',
     reportedFor:''
   });
+  const [roles, setRoles] = useState([]);
+
+  useEffect(() => {
+    // Fetch users from the API
+    const fetchUsers = async () => {
+      try {
+        const response = await axios.get('http://localhost:8000/users');
+        setUsers(response.data);  // Store the user data
+        console.log(response.data)
+      } catch (err) {
+        console.error('Error fetching users:', err);
+      }
+    };
+    fetchUsers();
+  }, []);
+
+  useEffect(() => {
+    // Fetch roles from the API
+    const fetchRoles = async () => {
+      try {
+        const response = await axios.get('http://localhost:8000/roles'); // Adjust the URL to your roles API
+       console.log(response.data)
+        setRoles(response.data);
+      } catch (error) {
+        console.error('Error fetching roles:', error);
+      }
+    }; fetchRoles();
+  }, []);
 
   useEffect(() => {
     // Fetch the user data based on the ID
@@ -42,6 +71,7 @@ const EditUserTable = () => {
     e.preventDefault();
     try {
       await axios.put(`http://localhost:8000/users/${id}`, user);
+      console.log("update", await axios.put(`http://localhost:8000/users/${id}`, user))
      navigate("/tables") // Redirect to the list or view page after successful update
     } catch (err) {
       console.error('Failed to update user data.', err);
@@ -118,19 +148,21 @@ const EditUserTable = () => {
             </Form.Select>
         </Form.Group>
 
-        <Form.Group as={Col} controlId="formPassword">
-          <Form.Label>Role</Form.Label>
-          <Form.Select
-              name="role"
-              value={user.role}
+        <Form.Group className="mb-3" controlId="formRole">
+            <Form.Label className="text-black dark:text-white fw-normal">Role</Form.Label>
+            <Form.Select
+              name="roleName"
+              value={user.roleName}
               onChange={handleChange}
             >
               <option value="">Select Role</option>
-              <option value="admin">admin</option>
-              <option value="user">user</option>
-              <option value="guest">guest</option>
+              {roles.map((role) => (
+                <option key={role.id} value={role.name}>
+                  {role.name}
+                </option>
+              ))}
             </Form.Select>
-        </Form.Group>
+          </Form.Group>
       </Row>
       <Row>
       <Form.Group as={Col} controlId="formIsActive">
@@ -146,16 +178,18 @@ const EditUserTable = () => {
               </Form.Select>
             </Form.Group>
             <Form.Group as={Col} controlId="formReportedFor">
-              <Form.Label className='text-black dark:text-white fw-normal'>Reported For</Form.Label>
+              <Form.Label className='text-black dark:text-white fw-normal'>Reported To</Form.Label>
               <Form.Select
-                name="reportedFor"
-                value={user.reportedFor}
+                name="reportedTo"
+                value={user.reportedTo}
                 onChange={handleChange}
               >
-                <option value="">Select Reason</option>
-                <option value="yes">Yes</option>
-                <option value="no">No</option>
-                
+                <option value="">Select User</option>
+                {users.map((user) => (
+                  <option key={user.id} value={user.id}>
+                    {user.firstName} {user.lastName}
+                  </option>
+                ))}
               </Form.Select>
             </Form.Group>
 

@@ -22,6 +22,19 @@ import Contract from './pages/contract/Contract';
 import Quotation from './pages/Quotation/Quotation'
 import QuotationForm from './pages/Quotation/QuotationForm';
 import EditUserTable from './pages/EditUserTable';
+import EditLead from './pages/Lead/EditLead';
+import HistoryLead from './pages/Lead/HistoryLead';
+import LeadDetail from './pages/Lead/LeadDetail';
+import CreateContract from './pages/contract/CreateContract';
+import EditQuest from './pages/Question/EditQuest';
+import EditContract from './pages/contract/EditContract';
+import EditQuot from './pages/Quotation/EditQuot';
+import ClientInformation from './pages/Question/ClientInformation';
+import GeneralContract from './pages/contract/GeneralContract';
+import IATFContractReviewForm from './pages/ISO_Form/IATFContractReviewForm';
+import ProtectedRoute from './util/ProtectedRoute';
+import InitialManday from './pages/ISO_Form/InitialManday';
+import Recertificate from './pages/ISO_Form/Recertificate';
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
   const { pathname } = useLocation();
@@ -39,6 +52,17 @@ function App() {
   ) : (
     <DefaultLayout>
       <Routes>
+
+      <Route
+         index
+          element={
+            <>
+              <PageTitle title="Signup | TailAdmin - Tailwind CSS Admin Dashboard Template" />
+             <AdminIn/>
+            </>
+          }
+        /> 
+        <Route element={<ProtectedRoute/>}>
         <Route
           path="/dashboard"
           element={
@@ -149,15 +173,7 @@ function App() {
         />
 
        {/* admin */}
-       <Route
-         index
-          element={
-            <>
-              <PageTitle title="Signup | TailAdmin - Tailwind CSS Admin Dashboard Template" />
-             <AdminIn/>
-            </>
-          }
-        />
+       
         <Route
         path="/business/lead"
         element={
@@ -175,6 +191,16 @@ function App() {
             <Contract/>
           </>
         }
+        />
+        <Route
+         path="/business/contract/create"
+         element={
+          <>
+            <PageTitle title="Signup | TailAdmin - Tailwind CSS Admin Dashboard Template" />
+            {/* <Contract/> */}
+            <CreateContract/>
+          </>
+         }
         />
         <Route
         path="/business/Quotation"
@@ -209,6 +235,167 @@ function App() {
           </>
         }
         />
+       <Route
+          path='/lead/edit-user/:id'
+          element={
+            <>
+            <PageTitle title="Signup | TailAdmin - Tailwind CSS Admin Dashboard Template" />
+          
+              <EditLead/>
+            
+            </>
+          }
+          />
+
+          <Route path="/quotation/edit-user/:id"
+            element={
+              <>
+              <PageTitle title="Signup | TailAdmin - Tailwind CSS Admin Dashboard Template" />
+            
+                <EditQuot/>
+              
+              </>
+            }
+            />
+
+<Route
+          path='/lead/history'
+          element={
+            <>
+            <PageTitle title="Signup | TailAdmin - Tailwind CSS Admin Dashboard Template" />
+          
+              <HistoryLead/>
+            
+            </>
+          }
+          />
+
+
+          <Route path='/lead/detail/:id'
+          element={
+            <>
+            <PageTitle title="Signup | TailAdmin - Tailwind CSS Admin Dashboard Template" />
+          
+        <LeadDetail/>
+            
+            </>
+          }
+          />
+{/* questionnaire */}
+<Route
+          path='/questionnaire/edit-user/:id'
+          element={
+            <>
+            <PageTitle title="Signup | TailAdmin - Tailwind CSS Admin Dashboard Template" />
+            <EditQuest/>
+              
+            
+            </>
+          }
+          />
+          <Route
+          path='/contract/edit-user/:id'
+          element={
+            <>
+            <PageTitle title="Signup | TailAdmin - Tailwind CSS Admin Dashboard Template" />
+             <EditContract/>
+              
+            
+            </>
+          }
+          />
+
+<Route
+          path='/questionnaire/form'
+          element={
+            <>
+            <PageTitle title="Signup | TailAdmin - Tailwind CSS Admin Dashboard Template" />
+            <ClientInformation/>
+              
+            
+            </>
+          }
+          />
+
+<Route
+          path='/business/contract/contractReview'
+          element={
+            <>
+            <PageTitle title="Signup | TailAdmin - Tailwind CSS Admin Dashboard Template" />
+            {/* <ClientInformation/> */}
+            <GeneralContract/>
+              
+            
+            </>
+          }
+          />
+          <Route
+          path='/business/contract/review'
+          element={
+            <>
+            <PageTitle title="Signup | TailAdmin - Tailwind CSS Admin Dashboard Template" />
+            {/* <ClientInformation/> */}
+            <IATFContractReviewForm/>
+              
+            
+            </>
+          }
+          />
+
+
+<Route
+          path='/business/contract/contractReview'
+          element={
+            <>
+            <PageTitle title="Signup | TailAdmin - Tailwind CSS Admin Dashboard Template" />
+            {/* <ClientInformation/> */}
+            <GeneralContract/>
+              
+            
+            </>
+          }
+          />
+          <Route
+          path='/business/contract/manday'
+          element={
+            <>
+            <PageTitle title="Signup | TailAdmin - Tailwind CSS Admin Dashboard Template" />
+            {/* <ClientInformation/> */}
+            {/* <IATFContractReviewForm/> */}
+              
+               <InitialManday/> 
+            </>
+          }
+          />
+
+<Route
+          path='/business/contract/recertification'
+          element={
+            <>
+            <PageTitle title="Signup | TailAdmin - Tailwind CSS Admin Dashboard Template" />
+            {/* <ClientInformation/> */}
+            {/* <IATFContractReviewForm/> */}
+              
+               {/* <InitialManday/>  */}
+               <Recertificate/>
+            </>
+          }
+          />
+
+
+
+        </Route>
+
+
+
+        
+
+
+
+          
+
+
+
 
       </Routes>
     </DefaultLayout>

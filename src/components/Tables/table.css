@@ -1,0 +1,51 @@
+
+.table-container {
+    overflow: auto;
+    height:500px
+    
+}
+
+.custom-table {
+    border-collapse: collapse;
+}
+
+.custom-table thead th {
+    background-color: #f8f9fa;
+    color: #333;
+    text-align: left;
+}
+
+.custom-table tbody tr {
+    transition: background-color 0.2s ease;
+}
+
+.custom-table tbody tr:hover {
+    background-color: #f1f1f1;
+}
+
+.table-row td {
+    padding: 8px;
+    
+}
+
+.dropdown-toggle-custom {
+    cursor: pointer;
+    padding: 5px;
+}
+
+.dropdown-toggle-custom:hover {
+    color: #152238;
+}
+
+.dropdown-menu-custom {
+    min-width: 150px;
+}
+
+.custom-table td,
+.custom-table th {
+    border: none; /* Remove borders to avoid extra lines */
+}
+
+.table-row {
+    cursor: pointer;
+}

@@ -1,0 +1,56 @@
+.family{
+    font-family: Arial, sans-serif;
+}
+
+.custom-upload-area {
+    border: 2px dashed #d6d8db;
+    border-radius: 10px;
+    padding: 20px;
+    text-align: center;
+    background-color: #ffffff ;
+    cursor: pointer;
+    color: #6c757d;
+    font-family: Arial, sans-serif;
+    transition: background-color 0.3s ease-in-out;
+  }
+  
+  .custom-upload-area:hover {
+    background-color: #f8f9fa;
+  }
+  
+  .upload-icon {
+    color: #adb5bd;
+    font-size: 2rem;
+  }
+  
+  .custom-upload-area p {
+    margin: 0;
+    color: #495057;
+  }
+  
+  .upload-area::after {
+    content: '';
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    bottom: -5px;
+    left: -5px;
+    border: 1px solid #ced4da;
+    border-radius: 10px;
+  }
+  
+
+  .comment-avatar {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: 30px;
+    height: 30px; 
+    border-radius: 50%;
+    border: 1px solid #A9A9A9;
+    margin-right: 10px;
+    font-weight: bold;
+  }
+  .ml-30{
+    margin-left: 30px ;
+  }

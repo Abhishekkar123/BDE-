@@ -12,7 +12,7 @@ function AdminIn() {
       const token = localStorage.getItem('token');
       if (token) {
         // Redirect to dashboard if token exists
-        navigate('/dashboard');
+        navigate('/dashboard'); 
       }
     }, [navigate]);
 
@@ -42,16 +42,21 @@ function AdminIn() {
     // Handle successful login, e.g., redirect or update state
 
     try{
-      const response = await axios.post('http://localhost:8000/api/auth/admin/login', { email, password });
+      const response = await axios.post('http://localhost:8000/api/auth/login', { email, password });
       setError('');
       navigate('/dashboard');
-      console.log(response);
-      console.log(response.data.token)
-
+      
+       console.log("abc",(response.data.existUser))
+       const permission=response.data.existUser.permissions;
+       console.log(JSON.stringify(permission))
+       console.log(permission[0].lead.view)
       //store in localstorage
       localStorage.setItem('token', response.data.token);
-      localStorage.setItem('admin', 'admin');
-
+      localStorage.setItem('user',response.data.existUser.roleName);
+      localStorage.setItem("permission",JSON.stringify(permission))
+      localStorage.setItem("id",response.data.existUser.id);
+      localStorage.setItem("role",response.data.existUser.roleName);
+      // localStorage.setItem('prespermission',)
       
     }catch(error){
       if (error.response && error.response.status === 401) {
@@ -59,7 +64,7 @@ function AdminIn() {
         setError('Incorrect email or password. Please try again.');
       } else {
         // Handle other possible errors (e.g., network issues)
-        setError('An error occurred. Please try again later.');
+        setError('Incorrect email or password. Please try again.');
       }
 
     }
@@ -69,14 +74,10 @@ function AdminIn() {
     <div className="flex items-center justify-center min-h-screen bg-gray-100 dark:bg-boxdark">
       <div className="w-full max-w-md rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
         <div className="p-4 sm:p-12.5 xl:p-17.5">
-          <div className="mb-6 flex items-center justify-center gap-3">
-            <h2 className="text-title-md2 font-semibold text-black dark:text-white">
-              Sign In
-            </h2>
-          </div>
+          
 
           <h2 className="mb-9 text-2xl font-bold text-black text-center dark:text-white sm:text-title-xl2">
-            Sign In Admin
+            Sign In 
           </h2>
 
           {error && (
