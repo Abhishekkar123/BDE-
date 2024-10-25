@@ -426,13 +426,13 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
               </li>
               <li>
                 <NavLink
-                  to="/business/contract"
+                  to="/business/contract/review"
                   className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${
-                    pathname.includes('/business/contract') && 'bg-graydark dark:bg-meta-4'
+                    pathname.includes('/business/contract/review') && 'bg-graydark dark:bg-meta-4'
                   }`}
                 >
                   
-                  Contract Review/Application Review
+                  {localStorage.getItem('role')=='Contract Reviewer'? "Contract Approval" : "Contract Review/Application Review"}
                 </NavLink>
               </li>
               <li>

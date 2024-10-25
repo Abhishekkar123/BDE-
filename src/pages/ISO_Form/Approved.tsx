@@ -1,14 +1,13 @@
-import React, { useEffect } from 'react';
+import React from 'react'
 import { Form, Row, Col, Button,Table} from 'react-bootstrap';
-import { useState } from 'react';
+import { useState,useEffect } from 'react';
 // import { fontWeight } from 'html2canvas/dist/types/css/property-descriptors/font-weight';
-import {data,data1} from './data.ts'
+// import {data,data1} from './data.ts'
 import { useNavigate } from 'react-router-dom';
-import jsPDF from 'jspdf';
-import 'jspdf-autotable';
-import axios from 'axios';
-const IATFContractReviewForm = () => {
-  const navigate=useNavigate()
+import axios from 'axios'
+
+function Approved() {
+    const navigate=useNavigate()
   const [data,setData]=useState(false)
   const [mandays,setMandays]=useState('')
   const [survillance,setSurvillance]=useState('')
@@ -23,8 +22,8 @@ const IATFContractReviewForm = () => {
     certificationType: '',
     standard: '',
     justificationForExclusion: '',
-    commentOnUsage: '',
-    MultisiteOrganization: '',
+    comment: '',
+    isMultisiteOrganization: '',
     isUnderCorporateScheme: '',
     corporateHeaderName: '',
     remarks: '',
@@ -101,8 +100,6 @@ const IATFContractReviewForm = () => {
   const [contractData,setCOntractData]=useState();
   const [naceCode2,setNaceCod2]=useState([]);
   const [iaf,setIaf]=useState([])
-  const [increase,setIncrease]=useState([]);
-  const [decrease,setDecrease]=useState([]);
 
   const [recretification,setRecertification]=useState('');
 
@@ -211,8 +208,9 @@ const IATFContractReviewForm = () => {
 const handleInputChange = (event) => {
   const { name, value, type } = event.target;
   if (type === 'radio') {
-    setFormData({ ...formData, [name]: value === 'true' });
+    setFormData({ ...formData, [name]: type === 'radio' ? (value === 'true') : value});
   } else {
+    console.log(name,value)
     setFormData({ ...formData, [name]: value });
   }
 };
@@ -226,7 +224,7 @@ const handleInputChange = (event) => {
 
   
 
-  console.log(data1)
+//   console.log(data1)
   // const [showModal, setShowModal] = useState(false);
   // const [showModal1,setShowModal1]=useState(false);
 
@@ -300,121 +298,6 @@ const handleInputChange = (event) => {
             revisionHistory: updatedRevisionHistory
         }));
     };
-    
-      // Function to calculate total mandays (based on manual input)
-      // const calculateTotalMandays = () => {
-      //   return rows.reduce((total, row) => {
-      //     const manday = parseFloat(row.manday);
-      //     return total + (isNaN(manday) ? 0 : manday);
-      //   }, 0);
-      // };
-
-
-      // const handleData=()=>{
-      //   // console.log("hello")
-      // }
-
-      // const generatePDF = () => {
-      //   const doc = new jsPDF();
-      
-      //   // Title of the PDF
-      //   doc.text('IATF Contract Review Form', 105, 10, null, null, 'center');
-      
-      //   // General Information Section
-      //   doc.text('General Information', 105, 20, null, null, 'center');
-      //   doc.autoTable({
-      //     startY: 30,
-      //     body: [
-      //       ['Organization’s Name', 'Test Organization'],  // Replace with dynamic data
-      //       ['Address', 'abcdef, mnhasdf'],
-      //       ['Scope / Activity', '1234'],
-      //       ['Status', 'Accepted'],
-      //       ['Certification Type', 'qwe'],
-      //       ['Standard', 'IATF 16949:2016'],
-      //       ['Justification for Exclusion', 'Specifically for Design & Development'],
-      //       ['Is it a multisite organization?', 'No'],
-      //       ['Is it under Corporate Scheme?', 'Yes'],
-      //       ['Remarks', 'Some remarks here'],
-      //     ],
-      //   });
-      
-      //   // Accreditation Information Section
-      //   doc.text('Accreditation Information', 14, doc.autoTable.previous.finalY + 10);
-      //   doc.autoTable({
-      //     startY: doc.autoTable.previous.finalY + 20,
-      //     body: [
-      //       ['Accreditation To Be Granted', 'Yes'],
-      //       ['Status of the Application', 'Accepted'],
-      //       ['Certification Body', 'IRSCLASS'],
-      //       ['Certificate Expiry Date', '2024-10-16'],
-      //       ['Certificate Number', 'VGDC123'],
-      //     ],
-      //   });
-      
-      //   // Site Information Section
-      //   doc.text('Site Information', 14, doc.autoTable.previous.finalY + 10);
-      //   doc.autoTable({
-      //     startY: doc.autoTable.previous.finalY + 20,
-      //     body: [
-      //       ['Main Site', 'Main Site Info Here'],
-      //       ['Site Extension', 'Add rows for each extension'],
-      //       ['Standalone Remote Support Location (SRSL)', 'SRSL Info'],
-      //     ],
-      //   });
-      
-      //   // Mandays Information Section
-      //   doc.text('Mandays Information', 14, doc.autoTable.previous.finalY + 10);
-      //   doc.autoTable({
-      //     startY: doc.autoTable.previous.finalY + 20,
-      //     head: [['Site Name', 'Total Man Power', 'Manday', 'Stage1', 'Stage2/Renewal']],
-      //     body: [
-      //       ['Main Site', '154', '7', '1', '1'],
-      //       ['Site Extension', 'Null', '1', '1', '1'],
-      //       ['Standalone Remote Support Location (SRSL)', 'Null', '1', '1', '1'],
-      //     ],
-      //   });
-      
-      //   // Surveillance Information
-      //   doc.text('Surveillance Information', 14, doc.autoTable.previous.finalY + 10);
-      //   doc.autoTable({
-      //     startY: doc.autoTable.previous.finalY + 20,
-      //     head: [['Surveillance #', 'Onsite', 'Offsite']],
-      //     body: [
-      //       ['Surveillance 1', '1', '1'],
-      //       ['Surveillance 2', '1', '1'],
-      //       ['Surveillance 3', '1', '1'],
-      //       ['Surveillance 4', '1', '1'],
-      //       ['Surveillance 5', '1', '1'],
-      //     ],
-      //   });
-      
-      //   // Impartiality Assessments
-      //   doc.text('Impartiality Assessments', 14, doc.autoTable.previous.finalY + 10);
-      //   doc.autoTable({
-      //     startY: doc.autoTable.previous.finalY + 20,
-      //     body: [
-      //       ['Possible Risk', 'Value'],
-      //       ['Consultant to the firm', 'Yes'],
-      //       ['Organization’s Top Management part of the Board', 'No'],
-      //       ['Review on Conflict of Interest', 'Passed'],
-      //     ],
-      //   });
-      
-      //   // Footer Information
-      //   doc.text('Comments / Remarks', 14, doc.autoTable.previous.finalY + 10);
-      //   doc.autoTable({
-      //     startY: doc.autoTable.previous.finalY + 20,
-      //     body: [
-      //       ['Prepared by', 'ss'],
-      //       ['Approved by', 'sss'],
-      //     ],
-      //   });
-      
-      //   // Save the PDF
-      //   doc.save('IATF_Contract_Review_Form.pdf');
-      // };
-      
-      // generatePDF();
 
       const handleData=()=>{
         navigate("/business/contract/manday")
@@ -457,22 +340,22 @@ const handleInputChange = (event) => {
       // const employeeCount=154
       // const [employeeCount,setEmployeeCount]=useState('')
 
-      const abc=async()=>{
-        setData(!data)
+      // const abc=async()=>{
+      //   setData(!data)
         
-       const employeeCount=calculateEmployeeCount();
-       setCount(employeeCount)
-        try{
-          const resp=await axios.post("http://localhost:8000/api/audit-calculation/calculate",{employeeCount:employeeCount})
-          console.log("cal",resp)
-          setMandays(resp.data.auditManDays);
-          setSurvillance(resp.data.surveillanceAuditMandays)
-          setRecertification(resp.data.recertificationAuditManDays)
-        }catch(err){
-          console.log("err",err.message)
-        }
+      //  const employeeCount=calculateEmployeeCount();
+      //  setCount(employeeCount)
+      //   try{
+      //     const resp=await axios.post("http://localhost:8000/api/audit-calculation/calculate",{employeeCount:employeeCount})
+      //     console.log("cal",resp)
+      //     setMandays(resp.data.auditManDays);
+      //     setSurvillance(resp.data.surveillanceAuditMandays)
+      //     setRecertification(resp.data.recertificationAuditManDays)
+      //   }catch(err){
+      //     console.log("err",err.message)
+      //   }
 
-      }
+      // }
 
 
       const dataCalculate=async()=>{
@@ -512,77 +395,44 @@ const handleInputChange = (event) => {
       const resp=await axios.get("http://localhost:8000/api/contract-reviews/contract-reviews");
       // console.log(resp)
       // contractData(resp.data[0])
+      console.log("resp-1",resp.data)
+      setRevision(resp.data[0].revisionHistory);
+
+      setFormData(resp.data[0])
+
       }catch(err){
         console.log(err)
       }
     }
 
 
-    const getMandays=async()=>{
-      try{
-        const resp7=await axios.get("http://localhost:8000/api/audit-calculation/decreasing-criteria");
-        console.log("resp7",resp7.data)
-        setDecrease(resp7.data)
-
-        const resp8=await axios.get("http://localhost:8000/api/audit-calculation/increasing-criteria");
-        console.log("resp8,",resp8.data) 
-        setIncrease(resp8.data)
-      }catch(err){
-
-      }
-    }
-
-
       useEffect(()=>{
-        getMandays();
        fetchContract();
-       dataCalculate();
+       dataCalculate()
       },[])
 
       const handleSubmit =async (event) => {
         event.preventDefault();
-        // console.log(formData.organizationName,formData.applicationStatus,formData.address,formData.certificationType,formData.standard);
-        // console.log(rows);
-
-        // const updatedRows = rows.map(row => {
-      
-        //   return {
-        //     ...row,
-        //     mainSiteManPower:count,
-        //     mainSiteManday: mandays,
-        //     mainSiteSA1: survillance,
-        //     mainSiteSA2: survillance,
-        //   };
-        // });
-        // console.log(updatedRows)
-        // console.log(rows)
-
-        // const extendedRows=usiCodesForSiteExtension.map(row=>{
-        //   return {
-        //     ...row,
-        //     mainSiteManPower:count,
-        //     mainSiteManday: mandays,
-        //     mainSiteSA1: survillance,
-        //     mainSiteSA2: survillance,
-
-        //   }
-        // })
+       
         const submissionData = {
           ...formData,
-          mainSiteManPower:count,
-        mainSiteManday: mandays,
-        mainSiteSA1: survillance,
-        mainSiteSA2: survillance,
-        manpowerAtSite:count
+          mainSiteStage1:parseFloat(formData.mainSiteStage1),
+          mainSiteStage2:parseFloat(formData.mainSiteStage2),
+        //   mainSiteManPower:count,
+        // mainSiteManday: mandays,
+        // mainSiteSA1: survillance,
+        // mainSiteSA2: survillance,
+        // manpowerAtSite:count
           // rows: updatedRows, // Use updated rows with calculated values
           
         };
         console.log(submissionData);
     
         try{
-          await axios.post("http://localhost:8000/api/contract-reviews/contract-reviews",submissionData)
-          navigate("/dashboard")
-    
+        //   await axios.post("http://localhost:8000/api/contract-reviews/contract-reviews",submissionData)
+        //   navigate("/dashboard")
+      await axios.put(`http://localhost:8000/api/contract-reviews/contract-reviews/${1}`,submissionData)
+        navigate("/dashboard")
         }catch(err){
           console.log("err",err)
         }
@@ -593,25 +443,6 @@ const handleInputChange = (event) => {
       // }
 
       // const handleClose1=()=>{setShowModal1(false);}
-
-      const handleCriteriaChange = (e) => {
-        const { value } = e.target;
-      
-        // Find the selected criteria in the decrease array
-        const selectedCriteria = decrease.find(
-          (status) => status.decreasingCriteria === value
-        );
-       console.log("------value-------",selectedCriteria);
-        if (selectedCriteria) {
-          // Update both criteria and factor in formData
-          setFormData((prevData) => ({
-            ...prevData,
-            decreaseMandaysCriteria: value, // Update the selected criteria
-            decreasingFactor: selectedCriteria.percentage, // Set decreasingFactor to the associated percentage
-          }));
-        }
-      };
-    
   return (
     <>
     <Form className='text-black' onSubmit={handleSubmit}>
@@ -677,29 +508,30 @@ const handleInputChange = (event) => {
 
       <Form.Group className="mb-3" controlId="justificationForExclusion">
         <Form.Label>Justification for exclusion, specifically for Design & Development</Form.Label>
-        <Form.Control as="textarea" rows={3} value={FormData.justificationForExclusion} name="justificationForExclusion" onChange={handleInputChange}/>
+        <Form.Control as="textarea" rows={3} value={formData.justificationForExclusion} name="justificationForExclusion" onChange={handleInputChange}/>
       </Form.Group>
 
       <Form.Group className="mb-3" controlId="commentOnUsage">
         <Form.Label>Comment on usage of Mark / Logo, display of certificate for its appropriateness and validity on the Client’s website</Form.Label>
-        <Form.Control as="textarea" rows={3} value={formData.commentOnUsage}  name="commentOnUsage" onChange={handleInputChange} />
+        <Form.Control as="textarea" rows={3} value={formData.comment}  name="comment" onChange={handleInputChange} />
       </Form.Group>
 
       {/* Multisite & Corporate Scheme */}
-      <Row className="mb-3">
-      <Form.Label>Is Multisite Organisation?</Form.Label>
-      <Form.Check
+    <Row className="mb-3">
+    <Form.Label>Is Multisite Organisation?</Form.Label>
+    <Form.Check
     type="radio"
     label="Yes"
-    name="MultisiteOrganization"
+    name="isMultisiteOrganization"
+    checked={formData.isMultisiteOrganization===true}
     value="true"
-    
     onChange={handleInputChange}
   />
   <Form.Check
     type="radio"
     label="No"
-    name="MultisiteOrganization"
+    name="isMultisiteOrganization"
+    checked={formData.isMultisiteOrganization===false}
     value="false"
     onChange={handleInputChange}
   />
@@ -797,7 +629,7 @@ const handleInputChange = (event) => {
         name="naceRev2"
       >
         <option value="">Select NACE (Rev.2)</option>
-       { naceCode2.map((data)=>{
+       { naceCode1.map((data)=>{
           // console.log("data",data.name)
           return(
             <>
@@ -822,7 +654,7 @@ const handleInputChange = (event) => {
         name="naceRev11"
       >
         <option value="">Select NACE (Rev.1.1)</option>
-       { naceCode1.map((data)=>{
+       { naceCode2.map((data)=>{
           // console.log(data.name)
           return(
             <>
@@ -903,7 +735,7 @@ const handleInputChange = (event) => {
     )}
   </tbody>
 </Table>
-<h4 className='mb-3'>Sites Name Information</h4>
+{/* <h4 className='mb-3'>Sites Name Information</h4>
 <Table bordered>
   <thead>
     <tr>
@@ -914,7 +746,7 @@ const handleInputChange = (event) => {
       <th>Part-time Emp.</th>
       <th>Contract Emp.</th>
       {/* <th>Total </th> */}
-    </tr>
+  {/*  </tr>
   </thead>
   <tbody>
     {ro.map((row, index) => (
@@ -964,7 +796,7 @@ const handleInputChange = (event) => {
             onChange={(e) => handleChange1(index, 'contractEmp', e.target.value)}
             placeholder="Enter Contract Emp."
           />
-        </td>
+        </td>*/}
         {/* <td>
           <Form.Control
             type="number"
@@ -975,7 +807,7 @@ const handleInputChange = (event) => {
           />
         </td> */}
 
-      </tr>
+    {/*  </tr>
     ))}
     {
       usiCodesForSiteExtension.map((row,index)=>(
@@ -1025,7 +857,7 @@ const handleInputChange = (event) => {
             onChange={(e) => handleSiteChange(index, 'contractEmp', e.target.value)}
             placeholder="Enter Contract Emp."
           />
-        </td>
+        </td>*/}
         {/* <td>
           <Form.Control
             type="number"
@@ -1036,13 +868,13 @@ const handleInputChange = (event) => {
           />
         </td> */}
 
-      </tr>
+     {/* </tr>
       ))}
   </tbody>
-</Table>
+</Table> */}
 
       {/* Standalone Remote Support Location Section */}
-      <h4 className='mb-3'>Standalone Remote Support Location (SRSL)</h4>
+      {/* <h4 className='mb-3'>Standalone Remote Support Location (SRSL)</h4>
 <Table bordered>
   <thead>
     <tr>
@@ -1106,11 +938,11 @@ const handleInputChange = (event) => {
       </tr>
     ))}
   </tbody>
-</Table>
+</Table> */}
 
-<Button onClick={abc} className='mb-2 p-2 ' style={{background:'#152238'}}>
+{/* <Button onClick={abc} className='mb-2 p-2 ' style={{background:'#152238'}}>
   Calculate Mandays
-</Button>
+</Button> */}
 
 
       <h4 className='mb-3'>Calculation of Mandays [Refer Annexure 1]</h4>
@@ -1139,7 +971,7 @@ const handleInputChange = (event) => {
                 <Form.Control
                   type="number"
                   name="mainSiteManPower"
-                  value={count}
+                  value={formData.mainSiteManPower}
                   onChange={handleInputChange}
                   placeholder="Man Power"
                 />
@@ -1148,25 +980,25 @@ const handleInputChange = (event) => {
                 <Form.Control
                   type="number"
                   name="mainSiteManday"
-                  value={mandays}
+                  value={formData.mainSiteManday}
                   onChange={handleInputChange}
                   placeholder="Manday"
                 />
               </td>
               <td>
                 <Form.Control
-                  type="number"
+                  type="text"
                   name="mainSiteStage1"
-                  value={formData.mainSiteStage1}
+                  value={formData.mainSiteStage1|| ''}
                   onChange={handleInputChange}
                   placeholder="Stage 1"
                 />
               </td>
               <td>
                 <Form.Control
-                  type="number"
+                  type="text"
                   name="mainSiteStage2"
-                  value={formData.mainSiteStage2}
+                  value={formData.mainSiteStage2 ||''}
                   onChange={handleInputChange}
                   placeholder="Stage 2"
                 />
@@ -1175,7 +1007,7 @@ const handleInputChange = (event) => {
                 <Form.Control
                   type="number"
                   name="mainSiteSpecialAudit"
-                  value={formData.mainSiteSpecialAudit}
+                  value={formData.mainSiteSpecialAudit|| ''}
                   onChange={handleInputChange}
                   placeholder="Special Audit"
                 />
@@ -1184,7 +1016,7 @@ const handleInputChange = (event) => {
                 <Form.Control
                   type="number"
                   name="mainSiteSA1"
-                  value={survillance}
+                  value={formData.mainSiteSA1|| ''}
                   onChange={handleInputChange}
                   placeholder="SA1"
                 />
@@ -1193,7 +1025,7 @@ const handleInputChange = (event) => {
                 <Form.Control
                   type="number"
                   name="mainSiteSA2"
-                  value={survillance}
+                  value={formData.mainSiteSA2|| ''}
                   onChange={handleInputChange}
                   placeholder="SA2"
                 />
@@ -1226,7 +1058,7 @@ const handleInputChange = (event) => {
                 <Form.Control
                   type="number"
                   name="mainSiteTransfer"
-                  value={formData.mainSiteTransfer}
+                  value={formData.mainSiteTransfer|| ''}
                   onChange={handleInputChange}
                   placeholder="Transfer"
                 />
@@ -1321,7 +1153,7 @@ const handleInputChange = (event) => {
               <Form.Control
                 type="number"
                 name="manpowerAtSite"
-                value={count}
+                value={formData.manpowerAtSite}
                 onChange={handleInputChange}
                 
               />
@@ -1389,20 +1221,12 @@ const handleInputChange = (event) => {
               />
             </td>
             <td>
-              
-              <Form.Select
-                
-                name="increaseMandaysCriteria"
-                value={formData.increaseMandaysCriteria}
-               onChange={handleInputChange}
-             >
-                <option value="" >Please select</option>
-                 {increase.map(status => (
-                   <option key={status.id} value={status.increasingCriteria}>{`${status.percentage}-${status.increasingCriteria}`}</option>
-                 ))}
-             
-
-             </Form.Select>
+              <Form.Control
+                type="text"
+              name="increaseMandaysCriteria"
+              value={formData.increaseMandaysCriteria}
+              onChange={handleInputChange}
+              />
             </td>
             <td>
               <Form.Control
@@ -1478,19 +1302,12 @@ Decreasing Factor
               />
             </td>
             <td>
-              <Form.Select
-                
+              <Form.Control
+                type="text"
                  name="decreaseMandaysCriteria"
                  value={formData.decreaseMandaysCriteria}
-                 onChange={handleCriteriaChange}
-              >
-                 <option value="" disabled>Please select</option>
-                  {decrease.map(status => (
-                    <option key={status.id} value={status.decreasingCriteria}>{`${status.percentage}-${status.decreasingCriteria}`}</option>
-                  ))}
-              
-
-              </Form.Select>
+                onChange={handleInputChange}
+              />
             </td>
             <td>
               <Form.Control
@@ -1542,7 +1359,7 @@ Decreasing Factor
             <td>
               <Form.Control
                 type="number"
-                value={formData.decreasingFactor}
+                // Static value
                 readOnly
               />
             </td>
@@ -1550,7 +1367,7 @@ Decreasing Factor
             <td>
               <Form.Control
                 type="number"
-               value={formData.increasingFactor}
+                // Static value
                 readOnly
               />
             </td>
@@ -1575,14 +1392,14 @@ Decreasing Factor
                 onChange={handleInputChange}
               />
             </td>
-            <td>Round off to next 0.50 day</td>
+            <td>Stage 2/Renewal Mandays</td>
             <td>
-              <Form.Control
+              {/* <Form.Control
                 type="number"
-                // name='stage2RenewalMandays'
-                // value={formData.stage2RenewalMandays}
+                name='stage2RenewalMandays'
+                value={formData.stage2RenewalMandays}
                 
-              />
+              /> */}
             </td>
           </tr>
           <tr>
@@ -1642,46 +1459,6 @@ Decreasing Factor
                 name="stage2RenewalOffsite"
                 value={formData.stage2RenewalOffsite}
                 onChange={handleInputChange}
-              />
-            </td>
-          </tr>
-          <tr>
-            <td>Additional 0.50 day for Planning stage1</td>
-            <td>
-            <Form.Control
-                type="number"
-                name="stage2RenewalOffsite"
-                value={formData.stage2RenewalOffsite}
-                onChange={handleInputChange}
-              />
-            </td>
-            <td>Additional 0.50 day for Planning stage2</td>
-            <td>
-            <Form.Control
-                type="number"
-                
-              />
-            </td>
-          
-
-          </tr>
-          <tr>
-            <td>
-              Total Mandays (stage1)
-            </td>
-            <td>
-            <Form.Control
-                type="number"
-                
-              />
-            </td>
-            <td>
-              Total Mandays (stage2)
-            </td>
-            <td>
-            <Form.Control
-                type="number"
-                
               />
             </td>
           </tr>
@@ -1786,46 +1563,6 @@ Decreasing Factor
 
 
             </tr>
-            <tr>
-            <td>Additional 0.50 day for Planning stage1</td>
-            <td>
-            <Form.Control
-                type="number"
-                name="stage2RenewalOffsite"
-                value={formData.stage2RenewalOffsite}
-                onChange={handleInputChange}
-              />
-            </td>
-            <td>Additional 0.50 day for Planning stage2</td>
-            <td>
-            <Form.Control
-                type="number"
-                
-              />
-            </td>
-          
-
-          </tr>
-          <tr>
-            <td>
-              Total Mandays (Survillance1)
-            </td>
-            <td>
-            <Form.Control
-                type="number"
-                
-              />
-            </td>
-            <td>
-              Total Mandays (Survillance2)
-            </td>
-            <td>
-            <Form.Control
-                type="number"
-                
-              />
-            </td>
-          </tr>
         </tbody>
       </Table>
 
@@ -1836,19 +1573,20 @@ Decreasing Factor
         <thead>
           <tr>
             <th>Possible Risk</th>
-            <th>Value (Yes/No)</th>
+            {/* <th>Value (Yes/No)</th> */}
             <th>Assessment / Mention Name of Resources</th>
           </tr>
         </thead>
         <tbody>
           <tr>
             <td>Consultant to the firm</td>
-            <td> <Form.Control as="select">
+            {/* <td> <Form.Control as="select">
                     <option value="">Select</option>
                     <option value="yes">Yes</option>
                     <option value="no">No</option>
-                  </Form.Control></td>
-            <td> <Form.Control
+                  </Form.Control></td> */}
+            <td>
+               <Form.Control
             type="text"
             name="consultantToFirm"
             value={formData.consultantToFirm}
@@ -1857,11 +1595,11 @@ Decreasing Factor
           </tr>
           <tr>
             <td>Name and details of the consultant to be confirmed</td>
-            <td> <Form.Control as="select">
+            {/* <td> <Form.Control as="select">
                     <option value="">Select</option>
                     <option value="yes">Yes</option>
                     <option value="no">No</option>
-                  </Form.Control></td>
+                  </Form.Control></td> */}
             <td><Form.Control
             type="text"
             name="consultantDetails"
@@ -1871,24 +1609,24 @@ Decreasing Factor
           </tr>
           <tr>
             <td>Organization’s Top Mgt part of IRS/ISSPL board</td>
-            <td> <Form.Control as="select">
+            {/* <td> <Form.Control as="select">
                     <option value="">Select</option>
                     <option value="yes">Yes</option>
                     <option value="no">No</option>
-                  </Form.Control></td>
-            <td> <Form.Control as="select">
+                  </Form.Control></td> */}
+            <td> <Form.Control as="select" name="isTopManagementPartOfBoard" value={formData.isTopManagementPartOfBoard}>
                     <option value="">Select</option>
-                    <option value="yes">Yes</option>
-                    <option value="no">No</option>
+                    <option value="true">Yes</option>
+                    <option value="false">No</option>
                   </Form.Control></td>
           </tr>
           <tr>
             <td>Influence through any training provided</td>
-            <td> <Form.Control as="select">
+            {/* <td> <Form.Control as="select">
                     <option value="">Select</option>
                     <option value="yes">Yes</option>
                     <option value="no">No</option>
-                  </Form.Control></td>
+                  </Form.Control></td> */}
             <td><Form.Control
             type="text"
             name="trainingInfluence"
@@ -1898,11 +1636,11 @@ Decreasing Factor
           </tr>
           <tr>
             <td>Review on Conflict of Interest</td>
-            <td> <Form.Control as="select">
+            {/* <td> <Form.Control as="select">
                     <option value="">Select</option>
                     <option value="yes">Yes</option>
                     <option value="no">No</option>
-                  </Form.Control></td>
+                  </Form.Control></td> */}
             <td><Form.Control
             type="text"
             name="conflictOfInterestReview"
@@ -2047,7 +1785,7 @@ Decreasing Factor
                 <td><Form.Control
             type="text"
             name="approvedByName"
-            value={formData.approvedByName}
+            value={formData.approvedByName|| ''}
             onChange={handleInputChange}
           /></td>
               </tr>
@@ -2056,7 +1794,7 @@ Decreasing Factor
                 <td><Form.Control
             type="text"
             name="approvedBySignature"
-            value={formData.approvedBySignature}
+            value={formData.approvedBySignature|| ''}
             onChange={handleInputChange}
           /></td>
               </tr>
@@ -2065,7 +1803,7 @@ Decreasing Factor
                 <td><Form.Control
             type="date"
             name="approvedByDate"
-            value={formData.approvedByDate}
+            value={formData.approvedByDate || ''}
             onChange={handleInputChange}
           /></td>
               </tr>
@@ -2086,34 +1824,46 @@ Decreasing Factor
           </tr>
         </thead>
         <tbody>
-        {revisionHistory.map((row,index)=>(
-         <tr>
-            <td> <Form.Control
-            type="date"
-            value={row.revisionDate}
-            onChange={(e) => handleHistory(index, 'revisionDate', e.target.value)}
-            placeholder="Enter Part-time Emp."
-          /></td>
-            <td><Form.Control
-            type="text"
-             value={row.revisionNo}
-             onChange={(e)=>handleHistory(index,'revisionNo',e.target.value)}
-            placeholder="Enter Part-time Emp."
-          /></td>
-            <td><Form.Control
-            type="text"
-            value={row.reason}
-            onChange={(e)=>handleHistory(index,'reason',e.target.value)}
-            placeholder="Enter Part-time Emp."
-          /></td>
-            <td><Form.Control
-            type="text"
-            value={row.details}
-            onChange={(e)=>handleHistory(index,'details',e.target.value)}
-            placeholder="Enter Part-time Emp."
-          /></td>
-          </tr>
-          )) }
+        {revisionHistory.map((row, index) => {
+      console.log("data", row);
+
+      return (
+        <tr key={index}>
+          <td>
+            <Form.Control
+              type="text"
+              value={row.revisionDate}
+              onChange={(e) => handleHistory(index, 'revisionDate', e.target.value)}
+              placeholder="Enter revision date"
+            />
+          </td>
+          <td>
+            <Form.Control
+              type="text"
+              value={row.revisionNo}
+              onChange={(e) => handleHistory(index, 'revisionNo', e.target.value)}
+              placeholder="Enter revision number"
+            />
+          </td>
+          <td>
+            <Form.Control
+              type="text"
+              value={row.reason}
+              onChange={(e) => handleHistory(index, 'reason', e.target.value)}
+              placeholder="Enter reason"
+            />
+          </td>
+          <td>
+            <Form.Control
+              type="text"
+              value={row.details}
+              onChange={(e) => handleHistory(index, 'details', e.target.value)}
+              placeholder="Enter details"
+            />
+          </td>
+        </tr>
+      );
+    })}
         </tbody>
       </Table>
 
@@ -2124,75 +1874,8 @@ Decreasing Factor
       </Button>
       </div>
     </Form>
-
-    {/* <Modal show={showModal} onHide={handleClose} size="lg">
-        <Modal.Header closeButton>
-          <Modal.Title>Audit Manday Data</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <Table striped bordered hover>
-            <thead>
-              <tr>
-                <th>Employees From</th>
-                <th>Employees To</th>
-                <th>Audit Man Days</th>
-                <th>Surveillance Audit Mandays</th>
-              </tr>
-            </thead>
-            <tbody>
-              {data.map((row, index) => (
-                <tr key={index}>
-                  <td>{row.employeesFrom}</td>
-                  <td>{row.employeesTo || 'Above'}</td>
-                  <td>{row.auditManDays}</td>
-                  <td>{row.surveillanceAuditMandays}</td>
-                </tr>
-              ))}
-            </tbody>
-          </Table>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button style={{background:'#152238'}} onClick={handleClose}>
-            Close
-          </Button>
-        </Modal.Footer>
-      </Modal>
-
-
-      <Modal show={showModal1} onHide={handleClose1} size="lg">
-        <Modal.Header closeButton>
-          <Modal.Title>Audit Manday Data</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <Table striped bordered hover>
-            <thead>
-              <tr>
-                <th>Employees From</th>
-                <th>Employees To</th>
-                <th>Audit Man Days</th>
-                
-              </tr>
-            </thead>
-            <tbody>
-              {data1.map((row, index) => (
-                <tr key={index}>
-                  <td>{row.employeesFrom}</td>
-                  <td>{row.employeesTo || 'Above'}</td>
-                  <td>{row.auditManDays}</td>
-                </tr>
-              ))}
-            </tbody>
-          </Table>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button style={{background:'#152238'}} onClick={handleClose1}>
-            Close
-          </Button>
-        </Modal.Footer>
-      </Modal> */}
-
     </>
-  );
-};
+  )
+}
 
-export default IATFContractReviewForm;
+export default Approved

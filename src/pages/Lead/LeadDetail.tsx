@@ -26,7 +26,7 @@ const LeadDetail = () => {
   const token = localStorage.getItem('token');
   console.log(id," currentUserId",currentUserId)
   const handleRoute = () => {
-    navigate('/business/contract/create', { state: { leadId: id } });
+    navigate('/business/contract/review', { state: { leadId: id } });
   };
   const show = () => {
     setIsPopup(true);

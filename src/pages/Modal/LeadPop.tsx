@@ -198,11 +198,11 @@ const LeadFormPopup = ({ onClose,onSuccess }) => {
                 <input type="text" id="country" name="country" value={formData.country} onChange={handleChange} className="mt-1 block w-full bg-gray-200 border-gray-300 border sm:text-sm p-2" />
               </div>
               <div>
-                <label htmlFor="state" className="block text-sm font-medium">state</label>
+                <label htmlFor="state" className="block text-sm font-medium">State</label>
                 <input type="text" id="state" name="state" value={formData.state} onChange={handleChange} className="mt-1 block w-full bg-gray-200 border-gray-300 border sm:text-sm p-2" />
               </div>
               <div>
-                <label htmlFor="city" className="block text-sm font-medium">city</label>
+                <label htmlFor="city" className="block text-sm font-medium">City</label>
                 <input type="text" id="city" name="city" value={formData.city} onChange={handleChange} className="mt-1 block w-full bg-gray-200 border-gray-300 border sm:text-sm p-2" />
               </div>
               <div className="col-span-2">

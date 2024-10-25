@@ -35,6 +35,8 @@ import IATFContractReviewForm from './pages/ISO_Form/IATFContractReviewForm';
 import ProtectedRoute from './util/ProtectedRoute';
 import InitialManday from './pages/ISO_Form/InitialManday';
 import Recertificate from './pages/ISO_Form/Recertificate';
+import Approved from './pages/ISO_Form/Approved';
+import AgreementForm from './pages/Agreement/AgreementForm';
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
   const { pathname } = useLocation();
@@ -46,6 +48,9 @@ function App() {
   useEffect(() => {
     setTimeout(() => setLoading(false), 1000);
   }, []);
+
+  const role=localStorage.getItem('role');
+  console.log("---role",role)
 
   return loading ? (
     <Loader />
@@ -183,15 +188,16 @@ function App() {
           </>
         }
         />
-      <Route
+      {<Route
         path="/business/contract"
         element={
           <>
             <PageTitle title="Signup | TailAdmin - Tailwind CSS Admin Dashboard Template" />
-            <Contract/>
+            {role==='Contract Reviewer'?<Approved/>:<Contract/>
+        }
           </>
         }
-        />
+        />}
         <Route
          path="/business/contract/create"
          element={
@@ -368,7 +374,7 @@ function App() {
           }
           />
 
-<Route
+          <Route
           path='/business/contract/recertification'
           element={
             <>
@@ -382,6 +388,17 @@ function App() {
           }
           />
 
+          <Route
+          path="/agreement"
+          element={
+              <>
+               <PageTitle title="Signup | TailAdmin - Tailwind CSS Admin Dashboard Template" />
+               <AgreementForm/>
+
+
+              </>
+          }
+         />
 
 
         </Route>

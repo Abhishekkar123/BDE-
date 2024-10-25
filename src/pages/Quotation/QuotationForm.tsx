@@ -6,7 +6,7 @@ import {useLocation } from 'react-router-dom';
 const QuotationForm = () => {
     // Initialize state for the form fields
     const location=useLocation();
-    console.log(location.state?.leadId)
+    // console.log(location.state?.leadId)
     const id=location.state?.leadId
     const navigate=useNavigate();
     const [formData, setFormData] = useState({
@@ -35,11 +35,22 @@ const QuotationForm = () => {
     });
     formData.leadId=id
 
+    const [dat,setDat]=useState({
+        mainSiteManday:0,
+        mainSiteStage1:'',
+            mainSiteStage2:'',
+            mainSiteSA1:'',
+            mainSiteSA2:''
+    })
+
     const [zone, setZone] = useState([]);
     const [surv, setSurv] = useState([]);
     const [cert, setCert] = useState([]);
     const [contract, setContract] = useState([]);
     const [curr,setCurr]=useState([]);
+    const [stand,setStand]=useState([]);
+    const [stand1,setStand1]=useState([]);
+    const [quotationData,setQuotationData]=useState([]);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -61,6 +72,13 @@ const QuotationForm = () => {
 
                 const resp5=await axios.get('http://localhost:8000/api/quotation/currency')
                 setCurr(resp5.data.data)
+
+                const resp6=await axios.get('http://localhost:8000/api/auditor/auditorStandards');
+                // console.log("data",resp6.data)
+                setStand(resp6.data);
+
+              
+
             } catch (error) {
                 console.error('Error fetching data:', error);
             }
@@ -68,6 +86,65 @@ const QuotationForm = () => {
 
         fetchData();
     }, []); 
+
+
+    const getData=async()=>{
+       try{
+        const resp=await axios.get(`http://localhost:8000/api/contract-reviews/contract-reviews/${id}`);
+        // console.log("response",resp.data);
+       setDat(resp?.data)
+
+       }catch(err){
+        console.log(err)
+       }
+    }
+
+    const getDummy=async()=>{
+        try{
+               const dummy=await axios.get("http://localhost:8000/api/formsIATF/dummy-price");
+              console.log("dummy",dummy.data);
+               setStand1(dummy?.data)
+        }catch(err){
+            console.log("dummy",err)
+
+        }
+    }
+
+    const quotation=async()=>{
+      try{
+        const resp=await axios.post("http://localhost:8000/api/audit-calculation/calculateQuotation",{
+            stage1auditManDays:(dat.mainSiteStage1||2), employeeCount:(dat.mainSiteManday || 154), standard:stand1[8]?.standard,stage2auditManDays:(dat.mainSiteStage2|| 5),surveillance1AuditMandays:(dat.mainSiteSA1|| 3.5), surveillance2AuditMandays:(dat.mainSiteSA2|| 3.5)
+        })
+        // stage1auditManDays:(dat.mainSiteStage1||2), employeeCount:(dat.mainSiteManday || 154), standard:stand1[8]?.standard,stage2auditManDays:(dat.mainSiteStage2|| 5),surveillance1AuditMandays:(dat.mainSiteSA1|| 3.5), surveillance2AuditMandays:(dat.mainSiteSA2|| 3.5)
+        console.log("respQuotation",resp?.data)
+        setQuotationData(resp?.data)
+
+
+      }catch(err){
+        console.log("error in Quoation",err)
+      }
+
+    }
+    // console.log(stand1[8].standard)
+
+    useEffect(()=>{
+      
+        getData();
+        getDummy();
+          
+    },[])
+
+    useEffect(()=>{
+        quotation();
+    },[])
+
+    const getFeeCategory = () => {
+        return dat.mainSiteManday < 65 ? "1-65" : "65+";
+      };
+
+    //  console.log( stand1[8]?.accreditationFees[getFeeCategory()]||0 )  
+    //  console.log("DATA",(stand1[8]?.auditFeesPerManday[getFeeCategory()]*((dat?.mainSiteStage1 ||2)*(1/2))*(1/2)))
+    //  console.log(((dat?.mainSiteStage1 ||2)*(1/2)))
 
     // Handle input change
     const handleChange = (e) => {
@@ -165,22 +242,28 @@ const QuotationForm = () => {
 
                 <Row className="mb-3">
                     <Col md={4}>
-                        <Form.Group controlId="standards">
-                            <Form.Label>Standards</Form.Label>
-                            <Form.Control
-                                type="text"
-                                name="standards"
-                                placeholder="BRC FOOD"
-                                value={formData.standards}
-                                onChange={handleChange}
-                            />
-                        </Form.Group>
+                    <Form.Group controlId="standards">
+                    <Form.Label>Standards</Form.Label>
+                    <Form.Select
+                        name="standards"
+                        value={formData.standards}
+                        onChange={handleChange}
+                    >
+                        <option value="">Select a standard</option> {/* Placeholder option */}
+                        {
+                            stand.map(src =>(
+                                <option key={src.name} value={src.name}>{src.name}</option>
+                            ))
+                        }
+                        {/* Add more options as needed */}
+                    </Form.Select>
+                    </Form.Group>
                     </Col>
                     <Col md={4}>
                         <Form.Group controlId="certificationType">
                             <Form.Label>Certification Type</Form.Label>
-                            <Form.Control
-                                as="select"
+                            <Form.Select
+                                
                                 name="certificationType"
                                 value={formData.certificationType}
                                 onChange={handleChange}
@@ -189,14 +272,13 @@ const QuotationForm = () => {
                                 {cert.map(src => (
                                     <option key={src.name} value={src.name}>{src.name}</option>
                                 ))}
-                            </Form.Control>
+                            </Form.Select>
                         </Form.Group>
                     </Col>
                     <Col md={4}>
                         <Form.Group controlId="surveillanceType">
                             <Form.Label>Surveillance Type</Form.Label>
-                            <Form.Control
-                                as="select"
+                            <Form.Select
                                 name="surveillanceType"
                                 value={formData.surveillanceType}
                                 onChange={handleChange}
@@ -205,7 +287,7 @@ const QuotationForm = () => {
                                 {surv.map(src => (
                                     <option key={src.name} value={src.name}>{src.name}</option>
                                 ))}
-                            </Form.Control>
+                            </Form.Select>
                         </Form.Group>
                     </Col>
                 </Row>
@@ -253,48 +335,66 @@ const QuotationForm = () => {
                         <tr>
                             <td>BRC FOOD</td>
                             <td>IATF</td>
-                            <td>0.85</td>
-                            <td>1.99</td>
-                            <td>0.85</td>
-                            <td>1.99</td>
+                            <td>{dat.mainSiteStage1 ||2}</td>
+                            <td>{dat.mainSiteStage2|| 5}</td>
+                            <td>{dat.mainSiteSA1|| 3.5}</td>
+                            <td>{dat.mainSiteSA2|| 3.5}</td>
                         </tr>
                     </tbody>
                 </Table>
 
                 <h5 className="text-black pb-4" style={{ fontSize: '1.5rem', fontWeight: '500' }}>Payment Information</h5>
                 <Row className="mb-3">
-                    <Col md={4}>
+                    <Col md={6}>
                         <Form.Group controlId="applicationFees">
                             <Form.Label>Application Fees</Form.Label>
                             <Form.Control
                                 type="number"
                                 name="applicationFees"
                                 placeholder="0"
-                                value={formData.applicationFees}
+                                value={ quotationData?.applicationFees}
                                 onChange={handleChange}
                             />
                         </Form.Group>
                     </Col>
-                    <Col md={4}>
+                    <Col md={6}>
                         <Form.Group controlId="accreditationFees">
                             <Form.Label>Accreditation Fees</Form.Label>
                             <Form.Control
                                 type="number"
                                 name="accreditationFees"
                                 placeholder="0"
-                                value={formData.accreditationFees}
+                                value={quotationData?.accreditationFees}
                                 onChange={handleChange}
                             />
                         </Form.Group>
                     </Col>
-                    <Col md={4}>
-                        <Form.Group controlId="surveillanceAudit1Fees">
-                            <Form.Label>Surveillance Audit #1 Fees</Form.Label>
+                    
+
+
+                   
+                </Row>
+                <Row>
+                <Col md={6}>
+                        <Form.Group controlId="stage1AuditFees">
+                            <Form.Label>Stage 1 Audit Fees</Form.Label>
                             <Form.Control
                                 type="number"
-                                name="surveillanceAudit1Fees"
+                                name="stage1AuditFees"
                                 placeholder="0"
-                                value={formData.surveillanceAudit1Fees}
+                                value={quotationData?.stage1AuditFees}
+                                onChange={handleChange}
+                            />
+                        </Form.Group>
+                    </Col>
+                    <Col md={6}>
+                        <Form.Group controlId="stage2AuditFees">
+                            <Form.Label>Stage 2/Renewal Audit Fees</Form.Label>
+                            <Form.Control
+                                type="number"
+                                name="stage2AuditFees"
+                                placeholder="0"
+                                value={quotationData?.stage2AuditFees}
                                 onChange={handleChange}
                             />
                         </Form.Group>
@@ -302,6 +402,18 @@ const QuotationForm = () => {
                 </Row>
 
                 <Row className="mb-3">
+                <Col md={4}>
+                        <Form.Group controlId="surveillanceAudit1Fees">
+                            <Form.Label>Surveillance Audit #1 Fees</Form.Label>
+                            <Form.Control
+                                type="number"
+                                name="surveillanceAudit1Fees"
+                                placeholder="0"
+                                value={quotationData.surveillance1AuditFees}
+                                onChange={handleChange}
+                            />
+                        </Form.Group>
+                    </Col>
                     <Col md={4}>
                         <Form.Group controlId="surveillanceAudit2Fees">
                             <Form.Label>Surveillance Audit #2 Fees</Form.Label>
@@ -309,7 +421,7 @@ const QuotationForm = () => {
                                 type="number"
                                 name="surveillanceAudit2Fees"
                                 placeholder="0"
-                                value={formData.surveillanceAudit2Fees}
+                                value={quotationData.surveillance2AuditFees}
                                 onChange={handleChange}
                             />
                         </Form.Group>
@@ -353,30 +465,30 @@ const QuotationForm = () => {
                 </Row>
 
                 <Row className="mb-3">
-                    <Col md={4}>
+                    {/* <Col md={4}>
                         <Form.Group controlId="stage1AuditFees">
                             <Form.Label>Stage 1 Audit Fees</Form.Label>
                             <Form.Control
                                 type="number"
                                 name="stage1AuditFees"
                                 placeholder="0"
-                                value={formData.stage1AuditFees}
+                                value={(stand1[8]?.accreditationFees[getFeeCategory()]||0)*(dat.mainSiteStage1 ||2)}
                                 onChange={handleChange}
                             />
                         </Form.Group>
                     </Col>
                     <Col md={4}>
                         <Form.Group controlId="stage2AuditFees">
-                            <Form.Label>Stage 2 Audit Fees</Form.Label>
+                            <Form.Label>Stage 2/Renewal Audit Fees</Form.Label>
                             <Form.Control
                                 type="number"
                                 name="stage2AuditFees"
                                 placeholder="0"
-                                value={formData.stage2AuditFees}
+                                value={(stand1[8]?.accreditationFees[getFeeCategory()]||0)*(dat.mainSiteStage2 ||5)}
                                 onChange={handleChange}
                             />
                         </Form.Group>
-                    </Col>
+                    </Col> */}
                     <Col md={4}>
                         <Form.Group controlId="totalFees">
                             <Form.Label>Total Fees</Form.Label>
@@ -384,7 +496,7 @@ const QuotationForm = () => {
                                 type="number"
                                 name="totalFees"
                                 placeholder="0"
-                                value={formData.totalFees}
+                                 value={quotationData?.totalQuotation}
                                 onChange={handleChange}
                             />
                         </Form.Group>
@@ -429,6 +541,46 @@ const QuotationForm = () => {
                             />
                         </Form.Group>
                     </Col>
+                    {formData.isDiscountGiven === 'true' && (
+                        <Row>
+                        <Col md={4}>
+                            <Form.Group controlId="discountAmount">
+                            <Form.Label>Discount Amount</Form.Label>
+                            <Form.Control
+                                type="number"
+                                name="discountAmount"
+                                value={formData.discountAmount}
+                                onChange={handleChange}
+                                placeholder="Enter discount amount"
+                            />
+                            </Form.Group>
+                        </Col>
+                        <Col md={4}>
+                            <Form.Group controlId="discountPercentage">
+                            <Form.Label>Discount Percentage</Form.Label>
+                            <Form.Control
+                                type="text"
+                                name="discountPercentage"
+                                value={formData.discountPercentage}
+                                readOnly
+                            />
+                            </Form.Group>
+                        </Col>
+                        <Col md={4}>
+                            <Form.Group controlId="reasonForDiscount">
+                            <Form.Label>Reason for Discount</Form.Label>
+                            <Form.Control
+                                type="text"
+                                name="reasonForDiscount"
+                                value={formData.reasonForDiscount}
+                                onChange={handleChange}
+                                placeholder="Enter reason for discount"
+                            />
+                            </Form.Group>
+                        </Col>
+                        </Row>
+                    )}
+
                     <Col md={4}>
                         <Form.Group controlId="approvedQuotationAmount">
                             <Form.Label>Approved Quotation Amount</Form.Label>
